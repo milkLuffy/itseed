@@ -49,27 +49,4 @@
     </div>
   </div>
 </section>
-<!-- <script>  
-$(document).ready(function(){  
-   
-    var email;  
-    $("#btnsendemail").click(function() {        
-         
-        email   = $("#email").val();  
-         
-        $("#message").text("驗證信寄出中 ...");  
-        $.post("@Url.Action("rem","UserController")",  
-            {  
-                  
-                email: email,  
-                
-            },  
-        function(data) {  
-        if(data == "sent") {  
-            $("#message").html("Email has been send successfully.");  
-        }  
-      });  
-    });  
-});  
-</script>   -->
 <% include ../footer %>

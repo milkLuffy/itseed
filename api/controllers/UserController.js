@@ -239,6 +239,8 @@ function registerAccount(res,newuser,callback){
 			};
         //註冊完寄送驗證信    
         var nodemailer = require('nodemailer');
+        var host=req.get('host');
+        var link="http://"+req.get('host')+"/mailverify?id="+req.session.userid;
 
         var transporter = nodemailer.createTransport({
          service: 'gmail',
@@ -252,9 +254,9 @@ function registerAccount(res,newuser,callback){
             from: 'apple556621@gmail.com',
             to: req.session.email,
             subject: '資訊種子註冊成功驗證信',
-            html: '<p>親愛的報名者您好,</p><br><p>請點擊連結繼續完成註冊手續</p><a href="http://www.itseed.tw/register?email=<%= mailmd5 %>"> 請點擊此連結 </a><br><p>第十六屆資訊種子招生團隊敬上</p>'
+            html: "<p>親愛的報名者您好,</p><br><p>請點擊連結繼續完成註冊手續</p><a href="+link+"> 請點擊此連結 </a><br><p>第十六屆資訊種子招生團隊敬上</p>"
             };
-
+// http://www.itseed.tw/register?email=<%= mailmd5 %>
         transporter.sendMail(mailOptions, function(error, info){
           if (error) {
             console.log(error);
@@ -265,6 +267,28 @@ function registerAccount(res,newuser,callback){
 			res.redirect("/disc");  
         });                
     },
+    mailverify: function(){
+        console.log(req.protocol+":/"+req.get('host'));
+        if((req.protocol+"://"+req.get('host'))==("http://"+host))
+        {
+            console.log("Domain is matched. Information is from Authentic email");
+        if(req.query.id==req.session.userid)
+        {
+            console.log("email is verified");
+            res.end("<h1>Email "+mailOptions.to+" is been Successfully verified");
+        }
+        else
+        {
+            console.log("email is not verified");
+            res.end("<h1>Bad Request</h1>");
+        }
+        }
+        else
+        {
+            res.end("<h1>Request is from unknown source");
+        }
+    },
+
     //檢查信箱是否已存在
     checkEmail: function (req, res) {
         User.findOne({
